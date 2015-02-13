@@ -1,0 +1,8 @@
+<h1>Expense Tracker</h1>
+
+<ul>
+  <li ng-repeat="category in categories">
+    <a ui-sref="categories.detail({ id: category.id })">{{ category }}</a>
+  </li>
+</ul>
+<div ui-view></div>
