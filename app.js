@@ -12,19 +12,45 @@ expenseTracker.config(function($stateProvider, $urlRouterProvider) {
     })
 
     .state('categories.detail', {
-      url: "/:id",
+      url: "/:categoryId",
       templateUrl: "partials/categories.detail.html",
-      controller: function($scope, $stateParams) {
-        $scope.categoryId = parseInt($stateParams.id)
-        $scope.category = $scope.categories[categoryId]
-      }
+      controller: 'ExpensesCtrl'
     })
 });
 
-expenseTracker.controller('CategoriesCtrl', function CategoriesCtrl($scope) {
-  $scope.categories = [{"name" : "Food"}, {"name" : "Home"}, {"name" : "Work"}];
-  $scope.addCategory = function() {
-    $scope.categories.push({ "name": $scope.categoryName });
-    $scope.categoryName = null;
+expenseTracker.controller('CategoriesCtrl', function CategoriesCtrl($scope, CategoriesFactory, utils) {
+  $scope.categories = CategoriesFactory.categories;
+  $scope.CategoriesFactory = CategoriesFactory;
+});
+
+expenseTracker.controller('ExpensesCtrl', function ExpensesCtrl($scope, $stateParams, CategoriesFactory, utils) {
+  $scope.category = utils.findById(CategoriesFactory.categories, $stateParams.categoryId)
+  $scope.addExpense = function() {
+    $scope.category.expenses.push({ "name": $scope.expenseName });
+    $scope.expenseName = null;
   };
 });
+
+expenseTracker.factory('utils', function() {
+  return {
+    findById: function findById(categories, id) {
+      for (var i = 0; i < categories.length; i++) {
+        if (categories[i].id == id) 
+          return categories[i];
+      }
+      return null;
+    }
+  };
+});
+
+expenseTracker.factory('CategoriesFactory', function() {
+  var factory = {};
+  factory.categories = [];
+  factory.addCategory = function() {
+    factory.categories.push({ "name": factory.categoryName, "id": factory.categories.length + 1, "expenses": [] });
+    factory.categoryName = null;
+  };
+
+  return factory;
+});
+
