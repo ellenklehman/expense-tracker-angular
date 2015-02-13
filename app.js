@@ -8,17 +8,23 @@ expenseTracker.config(function($stateProvider, $urlRouterProvider) {
     .state('categories', {
       url: "/categories",
       templateUrl: "partials/categories.html",
-      controller: function($scope) {
-        $scope.categories = ["Food", "Home", "Work"];
-      }
+      controller: 'CategoriesCtrl'
     })
 
     .state('categories.detail', {
       url: "/:id",
       templateUrl: "partials/categories.detail.html",
       controller: function($scope, $stateParams) {
-        categoryId = parseInt($stateParams.id)
+        $scope.categoryId = parseInt($stateParams.id)
         $scope.category = $scope.categories[categoryId]
       }
     })
+});
+
+expenseTracker.controller('CategoriesCtrl', function CategoriesCtrl($scope) {
+  $scope.categories = [{"name" : "Food"}, {"name" : "Home"}, {"name" : "Work"}];
+  $scope.addCategory = function() {
+    $scope.categories.push({ "name": $scope.categoryName });
+    $scope.categoryName = null;
+  };
 });
